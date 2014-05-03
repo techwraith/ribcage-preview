@@ -1,0 +1,31 @@
+{
+  "name": "ribcage-preview",
+  "version": "0.0.0",
+  "description": "Run a preview server for a ribcage component",
+  "main": "index.js",
+  "bin": {
+    "ribcage-preiew": "./bin/cli.js"
+  }
+  "dependencies": {
+    "atomify": "^1.5.0-beta3",
+    "handlebars": "^1.3.0",
+    "hbsfy": "^1.3.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Techwraith/ribcage-preview.git"
+  },
+  "keywords": [
+    "atomify"
+  ],
+  "author": "techwraith",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Techwraith/ribcage-preview/issues"
+  },
+  "homepage": "https://github.com/Techwraith/ribcage-preview"
+}
