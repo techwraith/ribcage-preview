@@ -5,7 +5,8 @@ module.exports = function (dir) {
   atomify({
     server: {
       lr: {
-        port: 4001
+        patterns: [dir + '/**']
+      , port: 4001
       }
     , port: 4000
     }
