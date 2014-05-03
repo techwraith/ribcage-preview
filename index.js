@@ -11,11 +11,11 @@ module.exports = function (dir) {
       , port: 4000
     }
   , css: {
-      entry: path.join(dir, '/example/entry.css')
+      entry: path.join(dir, 'example/entry.css')
     , debug: true
     }
   , js: {
-      entry: path.join(dir, '/example/entry.js')
+      entry: path.join(dir, 'example/entry.js')
     , debug: true
     }
   })
