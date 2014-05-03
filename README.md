@@ -1,7 +1,7 @@
 ribcage-preview
 ===============
 
-Run a preview server for a ribcage component
+Run a preview server with live reloading for a ribcage component
 
 
 ## Install
