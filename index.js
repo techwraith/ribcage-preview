@@ -1,5 +1,6 @@
 var atomify = require('atomify')
   , path = require('path')
+  , os = require('os')
 
 module.exports = function (dir) {
   atomify({
@@ -9,6 +10,7 @@ module.exports = function (dir) {
       , port: 4001
       }
     , port: 4000
+    , url: os.hostname()
     }
   , css: {
       entry: path.join(dir, 'example/entry.css')
