@@ -10,7 +10,7 @@ module.exports = function (dir) {
       , port: 4001
       }
     , port: 4000
-    , url: os.hostname() + '.local'
+    , url: 'http://' + os.hostname() + '.local'
     }
   , css: {
       entry: path.join(dir, 'example/entry.css')
