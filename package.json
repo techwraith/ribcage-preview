@@ -1,13 +1,13 @@
 {
   "name": "ribcage-preview",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "Run a preview server for a ribcage component",
   "main": "index.js",
   "bin": {
     "ribcage-preview": "./bin/cli.js"
   },
   "dependencies": {
-    "atomify": "^1.5.0-beta8",
+    "atomify": "^1.5.0-beta9",
     "handlebars": "^1.3.0",
     "hbsfy": "^1.3.2"
   },
