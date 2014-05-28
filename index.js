@@ -6,8 +6,9 @@ module.exports = function (dir) {
   atomify({
     server: {
       lr: {
-        patterns: [dir + '/**']
+        patterns: [dir + '/../**']
       , port: 4001
+      , sync: true
       }
     , port: 4000
     , url: 'http://' + os.hostname() + '.local'
