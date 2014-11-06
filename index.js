@@ -3,6 +3,12 @@ var atomify = require('atomify')
   , os = require('os')
 
 module.exports = function (dir) {
+  var hostname = os.hostname()
+
+  // hack--because sometimes hostnames end in .local and sometimes they don't...
+  if (hostname.slice(-1 * '.local'.length) !== '.local')
+    hostname = hostname + '.local'
+
   atomify({
     server: {
       lr: {
@@ -10,7 +16,7 @@ module.exports = function (dir) {
       , port: 4001
       }
     , port: 4000
-    , url: 'http://' + os.hostname() + '.local'
+    , url: 'http://' + os.hostname()
     }
   , css: {
       entry: path.join(dir, 'example/entry.css')
