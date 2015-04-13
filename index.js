@@ -1,9 +1,9 @@
-'use strict';
+'use strict'
 
 var atomify = require('atomify')
   , path = require('path')
 
-module.exports = function (dir) {
+module.exports = function ribcagePreview (dir) {
   atomify({
     server: {
       lr: {
