@@ -7,7 +7,7 @@
     "ribcage-preview": "./bin/cli.js"
   },
   "dependencies": {
-    "atomify": "^6.0.3"
+    "atomify": "^6.1.0"
   },
   "devDependencies": {},
   "scripts": {
