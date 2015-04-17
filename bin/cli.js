@@ -8,6 +8,6 @@ var server = require('../index.js')
 
 server({
   dir: path.join(process.cwd(), args._[0])
-  , debug: args.d || args.debug
+  , debug: !args['no-debug']
   , enableClientJSX: args.s || args['client-jsx']
 })
