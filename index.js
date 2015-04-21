@@ -52,6 +52,7 @@ module.exports = function ribcagePreview (options) {
       entry: cssEntry
     , alias: '/bundle.css'
     , debug: options.debug
+    , autoprefixer: typeof options.autoprefix === 'undefined' ? true : options.autoprefix
     }
   }
 

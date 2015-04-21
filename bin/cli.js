@@ -10,4 +10,5 @@ server({
   dir: path.join(process.cwd(), args._[0])
   , debug: !args['no-debug']
   , enableClientJSX: args.s || args['client-jsx']
+  , autoprefix: args.autoprefix
 })
