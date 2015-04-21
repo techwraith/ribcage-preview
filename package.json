@@ -21,7 +21,15 @@
     "url": "git://github.com/Techwraith/ribcage-preview.git"
   },
   "keywords": [
-    "atomify"
+    "atomify",
+    "reload",
+    "dev",
+    "es6",
+    "react",
+    "jsx",
+    "livereload",
+    "css",
+    "less"
   ],
   "author": "techwraith",
   "license": "MIT",
