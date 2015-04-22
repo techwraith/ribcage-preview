@@ -1,6 +1,6 @@
 {
   "name": "ribcage-preview",
-  "version": "3.1.1",
+  "version": "3.2.0",
   "description": "Run a preview server for a ribcage component",
   "main": "index.js",
   "bin": {
