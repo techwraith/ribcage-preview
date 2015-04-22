@@ -4,9 +4,10 @@ var atomify = require('atomify')
   , path = require('path')
   , fs = require('fs')
   , React = require('react')
-  , babel = require('babel-core')
-  , cwd = process.cwd()
+  , prettyError = require('prettify-error')
   , internals = {}
+
+require('babel/register')
 
 internals.findFirstFile = function findFirstFile (dir, filenames){
   var entryPath
@@ -33,6 +34,19 @@ internals.findEntryHTML = function findEntryHTML (dir){
   return internals.findFirstFile(dir, ['entry.html', 'index.html'])
 }
 
+internals.findEntryData = function findEntryHTML (dir){
+  return internals.findFirstFile(dir, ['data.js', 'data.json', 'entry.json'])
+}
+
+internals.htmlifyError = function htmlifyError (err){
+  return '<h1 style="color: red; background: yellow">' + err.message + '</h1>'
+    + '<ul style="list-style: none; padding: 0; margin: 0">'
+    + err.stack.split('\n').map(function eachLine (line){
+      return '<li>' + line.trim() + '</li>'
+    })
+    + '</ul>'
+}
+
 module.exports = function ribcagePreview (options) {
   var config = {
       server: {
@@ -47,6 +61,7 @@ module.exports = function ribcagePreview (options) {
     , jsEntry = internals.findEntryJs(exampleDir)
     , htmlEntry = internals.findEntryHTML(exampleDir)
     , jsComponent = internals.findEntryJs(options.dir)
+    , dataEntry = internals.findEntryData(exampleDir)
 
   if (cssEntry) {
     config.css = {
@@ -71,36 +86,35 @@ module.exports = function ribcagePreview (options) {
 
   if (jsEntry.indexOf('.jsx') > -1) {
     config.server.html = function defaultHtml (paths, callback){
-      babel.transformFile(jsComponent, function es5dTheCode (err, result){
-        var reactComponent
-          // be sure to include the body tag so that the livereload snipped can
-          // be inserted
-          , html = '<body>'
+      var reactComponent
+        // be sure to include the body tag so that the livereload snipped can
+        // be inserted
+        , html = '<body>'
+        , reactComponentHTML
+        , data
 
-        if (err) return void callback(err)
+      if (dataEntry) {
+        delete require.cache[dataEntry]
+        data = require(dataEntry)
+      }
 
-        // we'll get back a string of JS that needs to be run here, so … eval it
-        /* eslint-disable no-eval */
-        reactComponent = eval(result.code
-        /* eslint-enable no-eval */
-          // FIXME: OMG this is hacky. like… really bad. There might be a better
-          // way to do this by deleting the jsComponent from the require.cache
-          // and requring the file each time with the babel require hook in
-          // place… but I'm not sure if that's better or not.
+      delete require.cache[jsComponent]
 
-          // get node modules relative to the current working directory
-          .replace(/require\((['"])([A-z])/g, 'require($1' + path.join(cwd, '/node_modules') + '/$2')
-          // get modules relative to the component
-          .replace(/require\((['"])([.])/g, 'require($1' + path.dirname(jsComponent) + '/$2')
-        )
+      try {
+        reactComponent = require(jsComponent)
+        reactComponentHTML = React.renderToString(React.createElement(reactComponent, data))
+      }
+      catch (err) {
+        console.error(prettyError(err))
+        reactComponentHTML = internals.htmlifyError(err)
+      }
 
-        if (paths.css) html += '<link rel="stylesheet" href="' + paths.css + '" />'
-        html += '<div id="app">' + React.renderToString(React.createElement(reactComponent)) + '</div>'
-        if (paths.js && options.enableClientJSX) html += '<script src="' + paths.js + '"></script>'
-        html += '</body>'
+      if (paths.css) html += '<link rel="stylesheet" href="' + paths.css + '" />'
+      html += '<div id="app">' + reactComponentHTML + '</div>'
+      if (paths.js && options.enableClientJSX) html += '<script src="' + paths.js + '"></script>'
+      html += '</body>'
 
-        callback(null, html)
-      })
+      callback(null, html)
     }
   }
 
