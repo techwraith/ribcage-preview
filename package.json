@@ -7,11 +7,12 @@
     "ribcage-preview": "./bin/cli.js"
   },
   "dependencies": {
-    "atomify": "^7.0.0",
+    "atomify": "^7.0.2",
     "babel": "^5.1.11",
     "minimist": "^1.1.1",
     "prettify-error": "^0.1.1",
-    "react": "^0.13.1"
+    "react": "^0.13.2",
+    "resrcify": "^1.1.3"
   },
   "devDependencies": {},
   "scripts": {
