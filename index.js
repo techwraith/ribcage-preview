@@ -64,6 +64,12 @@ module.exports = function ribcagePreview (options) {
     , jsComponent = internals.findEntryJs(options.dir)
     , dataEntry = internals.findEntryData(exampleDir)
     , enableReactRouter = options.enableReactRouter
+    , enableJSX = jsEntry.indexOf('.jsx') > -1
+    // React's context is … weird, and ReactRouter relies on it heavily. We
+    // need to make sure we're requring the modules that the component is
+    // using. Otherwise, the context goes missing
+    , React = enableJSX ? require(path.join(cwd, 'node_modules', 'react')) : null
+    , ReactRouter = enableJSX && enableReactRouter ? require(path.join(cwd, 'node_modules', 'react-router')) : null
 
   if (cssEntry) {
     config.css = {
@@ -87,16 +93,11 @@ module.exports = function ribcagePreview (options) {
     config.server.html = htmlEntry
   }
 
-  if (jsEntry.indexOf('.jsx') > -1) {
+  if (enableJSX) {
     require('babel/register', {only: new RegExp(cwd), sourceMap: 'inline'})
 
     config.server.html = function defaultHtml (paths, callback) {
-      // React's context is … weird, and ReactRouter relies on it heavily. We
-      // need to make sure we're requring the modules that the component is
-      // using. Otherwise, the context goes missing
-      var React = require(path.join(cwd, 'node_modules', 'react'))
-        , ReactRouter = enableReactRouter ? require(path.join(cwd, 'node_modules', 'react-router')) : null
-        , getHTML = function getHTML (reactComponent, data) {
+      var getHTML = function getHTML (reactComponent, data) {
           var done = function done (calcedReactComponent) {
             callback(null, internals.makeHTML(
               paths
@@ -109,10 +110,19 @@ module.exports = function ribcagePreview (options) {
           if (enableReactRouter) ReactRouter.run(reactComponent, paths.request, done)
           else done(reactComponent)
         }
+      , cacheId
 
-      // dump the whole cache because we can't be sure what's going to be
-      // required by the entry file
-      require.cache = {}
+      // remove the cached requires for anything in the cwd directory
+      // we can't just remove the requires for the entries becuase they might
+      // require something else, and we can't just look at options.dir because
+      // it's nice to be able to change things outside of this component and
+      // have the change picked up. It also more closely matches watchify
+      // behavior
+      for (cacheId in require.cache){
+        if (cacheId.indexOf(cwd) > -1 && cacheId.indexOf('node_modules') < 0) {
+          delete require.cache[cacheId]
+        }
+      }
 
       try {
         getHTML(require(jsComponent), dataEntry ? require(dataEntry) : null)
