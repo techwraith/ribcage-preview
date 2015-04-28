@@ -3,7 +3,9 @@
 
 var server = require('../index.js')
   , minimist = require('minimist')
-  , args = minimist(process.argv.slice(2))
+  , args = minimist(process.argv.slice(2), {
+    boolean: ['s', 'client-jsx', 'r', 'react-router', 'autoprefix']
+  })
   , path = require('path')
 
 server({
