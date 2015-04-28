@@ -10,7 +10,6 @@
     "atomify": "^7.0.2",
     "babel": "^5.1.11",
     "minimist": "^1.1.1",
-    "prettify-error": "^0.1.1",
     "resrcify": "^1.1.3"
   },
   "devDependencies": {},
