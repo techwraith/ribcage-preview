@@ -95,7 +95,7 @@ module.exports = function ribcagePreview (options) {
       // need to make sure we're requring the modules that the component is
       // using. Otherwise, the context goes missing
       var React = require(path.join(cwd, 'node_modules', 'react'))
-        , ReactRouter = require(path.join(cwd, 'node_modules', 'react-router'))
+        , ReactRouter = enableReactRouter ? require(path.join(cwd, 'node_modules', 'react-router')) : null
         , getHTML = function getHTML (reactComponent, data) {
           var done = function done (calcedReactComponent) {
             callback(null, internals.makeHTML(
