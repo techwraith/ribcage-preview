@@ -27,11 +27,10 @@ Create an `example` folder in your `<dir>` with an `entry.js` and an `entry.css`
 You can disable sourcemaps with `--no-debug`
 
 #### `client-jsx` or `s`
-If the entry file is `.jsx`, client-side js will not be served unless this flag is passed.
+If the entry file is `.jsx`, client-side js will not be served unless this flag is passed. `react` needs to be installed in `node_modules` in the cwd.
 
 ### `react-router` or `r`
-If passed, the index file should pass a routes object for react-router instead of a component. This turns on `spaMode` so that both the server and the client render the same routes.
-
+If passed, the index file should pass a routes object for react-router instead of a component. This turns on `spaMode` so that both the server and the client render the same routes. `react-router` needs to be installed `node_modules` in cwd.
 
 
 ```sh
