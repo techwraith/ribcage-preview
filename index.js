@@ -94,7 +94,7 @@ module.exports = function ribcagePreview (options) {
   }
 
   if (enableJSX) {
-    require('babel/register', {only: new RegExp(cwd), sourceMap: 'inline'})
+    require('babel/register')({only: new RegExp(cwd), sourceMap: 'inline'})
 
     config.server.html = function defaultHtml (paths, callback) {
       var getHTML = function getHTML (reactComponent, data) {
