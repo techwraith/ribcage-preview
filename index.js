@@ -122,12 +122,12 @@ module.exports = function ribcagePreview (options) {
       // re-require react each time so that we get warning messages on each
       // page load
       Object.keys(require.cache).forEach(function removeReact (id) {
-        if (~id.indexOf(ReactPath)) delete require.cache[id]
+        if (id.indexOf(ReactPath) > -1) delete require.cache[id]
       })
       React = require(ReactPath)
       if (enableReactRouter) {
         Object.keys(require.cache).forEach(function removeReact (id) {
-          if (~id.indexOf(ReactRouterPath)) delete require.cache[id]
+          if (id.indexOf(ReactRouterPath) > -1) delete require.cache[id]
         })
         ReactRouter = require(ReactRouterPath)
       }
