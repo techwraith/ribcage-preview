@@ -71,8 +71,8 @@ module.exports = function ribcagePreview (options) {
     // React's context is … weird, and ReactRouter relies on it heavily. We
     // need to make sure we're requring the modules that the component is
     // using. Otherwise, the context goes missing
-    , React = enableJSX ? require(path.join(cwd, 'node_modules', 'react')) : null
-    , ReactRouter = enableJSX && enableReactRouter ? require(path.join(cwd, 'node_modules', 'react-router')) : null
+    , ReactPath = path.join(cwd, 'node_modules', 'react')
+    , ReactRouterPath = path.join(cwd, 'node_modules', 'react-router')
 
   if (cssEntry) {
     config.css = {
@@ -100,20 +100,37 @@ module.exports = function ribcagePreview (options) {
     require('babel/register')({only: new RegExp(cwd), sourceMap: 'inline'})
 
     config.server.html = function defaultHtml (paths, callback) {
-      var getHTML = function getHTML (reactComponent, data) {
-          var done = function done (calcedReactComponent) {
-            callback(null, internals.makeHTML(
-              paths
-              , React.renderToString(React.createElement(calcedReactComponent, data))
-              , options
-              , callback
-            ))
-          }
-
-          if (enableReactRouter) ReactRouter.run(reactComponent, paths.request, done)
-          else done(reactComponent)
+      var cacheId
+      , React
+      , ReactRouter
+      , getHTML = function getHTML (reactComponent, data) {
+        var done = function done (calcedReactComponent) {
+          callback(null, internals.makeHTML(
+            paths
+            , React.renderToString(React.createElement(calcedReactComponent, data))
+            , options
+            , callback
+          ))
         }
-      , cacheId
+
+        if (enableReactRouter) ReactRouter.run(reactComponent, paths.request, done)
+        else done(reactComponent)
+      }
+
+      console.info('--- load: ', paths.request)
+
+      // re-require react each time so that we get warning messages on each
+      // page load
+      Object.keys(require.cache).forEach(function removeReact (id) {
+        if (~id.indexOf(ReactPath)) delete require.cache[id]
+      })
+      React = require(ReactPath)
+      if (enableReactRouter) {
+        Object.keys(require.cache).forEach(function removeReact (id) {
+          if (~id.indexOf(ReactRouterPath)) delete require.cache[id]
+        })
+        ReactRouter = require(ReactRouterPath)
+      }
 
       // remove the cached requires for anything in the cwd directory
       // we can't just remove the requires for the entries becuase they might
