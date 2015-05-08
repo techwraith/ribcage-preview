@@ -38,7 +38,10 @@ internals.findEntryData = function findEntryHTML (dir) {
 internals.makeHTML = function makeHTML (paths, appContent, options) {
   // be sure to include the body tag so that the livereload snipped can
   // be inserted
-  var html = '<body>'
+  var html = '<head>'
+      + '<meta charset="utf-8">'
+    + '</head>'
+    + '<body>'
 
   if (paths.css) html += '<link rel="stylesheet" href="' + paths.css + '" />'
   html += '<div id="app">' + appContent + '</div>'
