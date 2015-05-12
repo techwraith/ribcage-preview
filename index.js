@@ -74,6 +74,8 @@ module.exports = function ribcagePreview (options) {
     , ReactPath = path.join(cwd, 'node_modules', 'react')
     , ReactRouterPath = path.join(cwd, 'node_modules', 'react-router')
 
+  process.title = 'ribcage-preview'
+
   if (cssEntry) {
     config.css = {
       entry: cssEntry
