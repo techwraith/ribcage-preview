@@ -108,6 +108,7 @@ module.exports = function ribcagePreview (options) {
     require('babel/register')({
       only: [new RegExp(cwd)]
       , sourceMap: 'inline'
+      , ignore: [/node_modules/]
     })
 
     config.server.html = function defaultHtml (paths, callback) {
