@@ -35,6 +35,10 @@ internals.findEntryData = function findEntryHTML (dir) {
   return internals.findFirstFile(dir, ['data.js', 'data.json', 'entry.json'])
 }
 
+internals.runAtomify = function runAtomify (config) {
+  atomify(config)
+}
+
 internals.makeHTML = function makeHTML (paths, appContent, options) {
   // be sure to include the body tag so that the livereload snipped can
   // be inserted
@@ -99,7 +103,11 @@ module.exports = function ribcagePreview (options) {
   }
 
   if (enableJSX) {
-    require('babel/register')({only: new RegExp(cwd), sourceMap: 'inline'})
+    // setup the babel require hook, but only affect files in the cwd
+    require('babel/register')({
+      only: [new RegExp(cwd)]
+      , sourceMap: 'inline'
+    })
 
     config.server.html = function defaultHtml (paths, callback) {
       var cacheId
@@ -161,5 +169,5 @@ module.exports = function ribcagePreview (options) {
     config.server.spaMode = true
   }
 
-  atomify(config)
+  internals.runAtomify(config)
 }
