@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "atomify": "^7.0.2",
-    "babel": "^5.2.6",
+    "babel": "^5.2.17",
     "minimist": "^1.1.1",
     "resrcify": "^1.1.3"
   },
