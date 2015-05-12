@@ -13,5 +13,5 @@ server({
   , debug: !args['no-debug']
   , enableClientJSX: args.s || args['client-jsx']
   , enableReactRouter: args.r || args['react-router']
-  , autoprefix: args.autoprefix
+  , autoprefix: typeof args.autoprefix === 'undefined' ? args.autoprefix : true
 })
