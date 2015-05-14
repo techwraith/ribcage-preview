@@ -35,8 +35,8 @@ internals.findEntryData = function findEntryHTML (dir) {
   return internals.findFirstFile(dir, ['data.js', 'data.json', 'entry.json'])
 }
 
-internals.runAtomify = function runAtomify (config) {
-  atomify(config)
+internals.runAtomify = function runAtomify (config, callback) {
+  atomify(config, callback)
 }
 
 internals.makeHTML = function makeHTML (paths, appContent, options) {
@@ -56,7 +56,7 @@ internals.makeHTML = function makeHTML (paths, appContent, options) {
   return html
 }
 
-module.exports = function ribcagePreview (options) {
+module.exports = function ribcagePreview (options, callback) {
   var config = {
       server: {
         lr: {
@@ -111,17 +111,17 @@ module.exports = function ribcagePreview (options) {
       , ignore: [/node_modules/]
     })
 
-    config.server.html = function defaultHtml (paths, callback) {
+    config.server.html = function defaultHtml (paths, htmlCallback) {
       var cacheId
       , React
       , ReactRouter
       , getHTML = function getHTML (reactComponent, data) {
         var done = function done (calcedReactComponent) {
-          callback(null, internals.makeHTML(
+          htmlCallback(null, internals.makeHTML(
             paths
             , React.renderToString(React.createElement(calcedReactComponent, data))
             , options
-            , callback
+            , htmlCallback
           ))
         }
 
@@ -160,9 +160,7 @@ module.exports = function ribcagePreview (options) {
         getHTML(require(jsComponent), dataEntry ? require(dataEntry) : null)
       }
       catch (err) {
-        // TODO better handle babel's crazy errors
-        // babel throws weird errors :( check the first line of this stacktrace
-        callback(err._babel ? new Error(err) : err)
+        htmlCallback(err)
       }
     }
   }
@@ -171,5 +169,7 @@ module.exports = function ribcagePreview (options) {
     config.server.spaMode = true
   }
 
-  internals.runAtomify(config)
+  internals.runAtomify(config, callback || function atomified (err) {
+    if (err) console.error(err)
+  })
 }
