@@ -12,7 +12,9 @@
     "minimist": "^1.1.1",
     "resrcify": "^1.1.3"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "eslint": "^0.21.2"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
