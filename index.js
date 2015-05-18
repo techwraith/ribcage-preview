@@ -1,6 +1,8 @@
 'use strict'
 
 var atomify = require('atomify')
+  , htmlifyError = require('atomify/lib/htmlifyError.js')
+  , assign = require('lodash/object/assign')
   , path = require('path')
   , fs = require('fs')
   , cwd = process.cwd()
@@ -39,7 +41,7 @@ internals.runAtomify = function runAtomify (config, callback) {
   atomify(config, callback)
 }
 
-internals.makeHTML = function makeHTML (paths, appContent, options) {
+internals.makeHTML = function makeHTML (paths, content, options) {
   // be sure to include the body tag so that the livereload snipped can
   // be inserted
   var html = '<head>'
@@ -49,7 +51,10 @@ internals.makeHTML = function makeHTML (paths, appContent, options) {
     + '<body>'
 
   if (paths.css) html += '<link rel="stylesheet" href="' + paths.css + '" />'
-  html += '<div id="app">' + appContent + '</div>'
+
+  if (!options.isError) html += '<div id="app">' + content + '</div>'
+  else html += content + '<div id="app"></div>'
+
   if (paths.js && options.enableClientJSX) html += '<script src="' + paths.js + '"></script>'
   html += '</body>'
 
@@ -117,10 +122,21 @@ module.exports = function ribcagePreview (options, callback) {
       , ReactRouter
       , getHTML = function getHTML (reactComponent, data) {
         var done = function done (calcedReactComponent) {
+          var content
+            , htmlOptions = assign({}, options)
+
+          try {
+            content = React.renderToString(React.createElement(calcedReactComponent, data))
+          }
+          catch (e) {
+            content = htmlifyError(e)
+            htmlOptions.isError = true
+          }
+
           htmlCallback(null, internals.makeHTML(
             paths
-            , React.renderToString(React.createElement(calcedReactComponent, data))
-            , options
+            , content
+            , htmlOptions
             , htmlCallback
           ))
         }
