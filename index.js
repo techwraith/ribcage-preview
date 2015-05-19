@@ -78,7 +78,7 @@ module.exports = function ribcagePreview (options, callback) {
     , jsComponent = internals.findEntryJs(options.dir)
     , dataEntry = internals.findEntryData(exampleDir)
     , enableReactRouter = options.enableReactRouter
-    , enableJSX = jsEntry.indexOf('.jsx') > -1
+    , enableJSX = jsEntry ? jsEntry.indexOf('.jsx') > -1 : false
     // React's context is … weird, and ReactRouter relies on it heavily. We
     // need to make sure we're requring the modules that the component is
     // using. Otherwise, the context goes missing
