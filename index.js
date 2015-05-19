@@ -45,8 +45,9 @@ internals.makeHTML = function makeHTML (paths, content, options) {
   // be sure to include the body tag so that the livereload snipped can
   // be inserted
   var html = '<head>'
-      + '<meta charset="utf-8">'
-      + '<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">'
+    + '<meta charset="utf-8">'
+    + '<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">'
+    + '<title>' + path.basename(options.dir) + '</title>'
     + '</head>'
     + '<body>'
 
