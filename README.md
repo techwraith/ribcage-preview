@@ -40,7 +40,7 @@ Create an `example` folder in your `<dir>` with an `entry.js` and an `entry.css`
 `.jsx` files are also recognized. If the index file is `.jsx`, client-side JS will be off by default unless you pass a `s` or `--client-jsx` flag. The `index.jsx` file is always rendered by the server and the results appended to `<div id=app>`. Your `example/entry.jsx` is the client-side entry for browserify. It should render into the same `div`.
 
 ## Flags
-### `no-debug`
+### `--no-debug`
 You can disable sourcemaps with `--no-debug`
 
 ### `--client-jsx` or `--s`
