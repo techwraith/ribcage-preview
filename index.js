@@ -5,6 +5,7 @@ var atomify = require('atomify')
   , assign = require('lodash/object/assign')
   , path = require('path')
   , fs = require('fs')
+  , chalk = require('chalk')
   , cwd = process.cwd()
   , internals = {}
 
@@ -154,7 +155,7 @@ module.exports = function ribcagePreview (options, callback) {
       }
       , component
 
-      console.info('--- load: ', paths.request)
+      console.info(chalk.blue('load: '), paths.request)
 
       // re-require react each time so that we get warning messages on each
       // page load
@@ -202,6 +203,6 @@ module.exports = function ribcagePreview (options, callback) {
   }
 
   internals.runAtomify(config, callback || function atomified (err) {
-    if (err) console.error(err)
+    if (err) console.error(chalk.red(err))
   })
 }
