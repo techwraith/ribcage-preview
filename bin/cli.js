@@ -2,17 +2,45 @@
 'use strict'
 
 var server = require('../index.js')
-  , minimist = require('minimist')
-  , args = minimist(process.argv.slice(2), {
-    boolean: ['s', 'client-jsx', 'r', 'react-router', 'no-debug']
-  })
-  , path = require('path')
-  , fs = require('fs')
+  , yargs = require('yargs')
+  , pkg = require('../package.json')
   , cwd = process.cwd()
-  , dir = path.join(cwd, args._[0])
-
-if (!fs.statSync(dir).isDirectory()) throw new Error('Must pass a directory')
-if (!fs.existsSync(path.join(cwd, 'node_modules'))) throw new Error('Must be run from a directory with `node_modules`')
+  , fs = require('fs')
+  , path = require('path')
+  , chalk = require('chalk')
+  , dir
+  , args = yargs
+    .usage('$0 <directory> [-sr] [--no-debug] [--react-router] [--client-jsx]')
+    .demand(1, chalk.red('Pass a directory'))
+    .describe({
+      s: chalk.yellow('Only applies to .jsx!') + ' Serve the client-side js. By default, jsx is only rendered on the server.'
+      , r: chalk.yellow('Only applies to .jsx!') + ' Enable the react-router. You must set your index file to pass a Route component.'
+      , 'no-debug': 'Disables sourcemaps.'
+    })
+    .alias({
+      h: 'help'
+      , r: 'react-router'
+      , s: 'client-jsx'
+    })
+    .default({
+      _: [cwd]
+    })
+    .check(function check (argv) {
+      var passedDir = argv._[0]
+      dir = path.join(cwd, passedDir || '')
+      if (!fs.statSync(dir).isDirectory()) {
+        return chalk.red('Pass a directory')
+      }
+      else if (!fs.existsSync(path.join(cwd, 'node_modules'))) {
+        return chalk.red('Must be run from a directory with `node_modules`')
+      }
+      else return true
+    })
+    .help('h')
+    .epilog('License: ' + pkg.license)
+    .version(pkg.version)
+    .showHelpOnFail(false, 'Pass --help for available options')
+    .argv
 
 server({
   dir: dir
