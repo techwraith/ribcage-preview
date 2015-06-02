@@ -62,6 +62,14 @@ internals.makeHTML = function makeHTML (paths, content, options) {
   return html
 }
 
+internals.requireReactRouter = function requireReactRouter () {
+  var ReactRouterPath = path.join(cwd, 'node_modules', 'react-router')
+  Object.keys(require.cache).forEach(function removeReact (id) {
+    if (id.indexOf(ReactRouterPath) > -1) delete require.cache[id]
+  })
+  return require(ReactRouterPath)
+}
+
 module.exports = function ribcagePreview (options, callback) {
   var config = {
       server: {
@@ -83,7 +91,6 @@ module.exports = function ribcagePreview (options, callback) {
     // need to make sure we're requring the modules that the component is
     // using. Otherwise, the context goes missing
     , ReactPath = path.join(cwd, 'node_modules', 'react')
-    , ReactRouterPath = path.join(cwd, 'node_modules', 'react-router')
 
   process.title = 'ribcage-preview'
 
@@ -145,6 +152,7 @@ module.exports = function ribcagePreview (options, callback) {
         if (enableReactRouter) ReactRouter.run(reactComponent, paths.request, done)
         else done(reactComponent)
       }
+      , component
 
       console.info('--- load: ', paths.request)
 
@@ -155,10 +163,7 @@ module.exports = function ribcagePreview (options, callback) {
       })
       React = require(ReactPath)
       if (enableReactRouter) {
-        Object.keys(require.cache).forEach(function removeReact (id) {
-          if (id.indexOf(ReactRouterPath) > -1) delete require.cache[id]
-        })
-        ReactRouter = require(ReactRouterPath)
+        ReactRouter = internals.requireReactRouter()
       }
 
       // remove the cached requires for anything in the cwd directory
@@ -174,7 +179,17 @@ module.exports = function ribcagePreview (options, callback) {
       }
 
       try {
-        getHTML(require(jsComponent), dataEntry ? require(dataEntry) : null)
+        component = require(jsComponent)
+        /* eslint-disable no-eq-null */
+        // if we found what looks like a route component and the flag for react
+        // router isn't passed, assume we actually want the router
+        if (component && component.type && component.type.name === 'Route' && enableReactRouter == null) {
+          /* eslint-enable no-eq-null */
+          console.warn(chalk.yellow('→ Found a Route component, assuming you wanted to enable react-router. Pass --react-router=false to disable. Pass -r to disable this message.'))
+          enableReactRouter = true
+          ReactRouter = internals.requireReactRouter()
+        }
+        getHTML(component, dataEntry ? require(dataEntry) : null)
       }
       catch (err) {
         htmlCallback(err)
