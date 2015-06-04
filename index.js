@@ -48,7 +48,7 @@ internals.makeHTML = function makeHTML (paths, content, options) {
   var html = '<head>'
     + '<meta charset="utf-8">'
     + '<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">'
-    + '<title>' + path.basename(options.dir) + '</title>'
+    + '<title>' + (options.title || path.basename(options.dir)) + '</title>'
     + '</head>'
     + '<body>'
 
@@ -136,6 +136,11 @@ module.exports = function ribcagePreview (options, callback) {
 
           try {
             content = React.renderToString(React.createElement(calcedReactComponent, data))
+            if (React.documentHead) {
+              assign(htmlOptions, React.documentHead)
+              // clear now that we've grabbed the info we need
+              React.documentHead = {}
+            }
           }
           catch (e) {
             content = htmlifyError(e)
@@ -146,7 +151,6 @@ module.exports = function ribcagePreview (options, callback) {
             paths
             , content
             , htmlOptions
-            , htmlCallback
           ))
         }
 
