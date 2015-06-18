@@ -6,6 +6,7 @@ var atomify = require('atomify')
   , path = require('path')
   , fs = require('fs')
   , chalk = require('chalk')
+  , a11y = require('react-a11y')
   , cwd = process.cwd()
   , internals = {}
 
@@ -91,7 +92,7 @@ module.exports = function ribcagePreview (options, callback) {
     // React's context is … weird, and ReactRouter relies on it heavily. We
     // need to make sure we're requring the modules that the component is
     // using. Otherwise, the context goes missing
-    , ReactPath = path.join(cwd, 'node_modules', 'react')
+    , ReactPath = path.join(cwd, 'node_modules', 'react/')
 
   process.title = 'ribcage-preview'
 
@@ -167,6 +168,7 @@ module.exports = function ribcagePreview (options, callback) {
         if (id.indexOf(ReactPath) > -1) delete require.cache[id]
       })
       React = require(ReactPath)
+      a11y(React)
       if (enableReactRouter) {
         ReactRouter = internals.requireReactRouter()
       }
